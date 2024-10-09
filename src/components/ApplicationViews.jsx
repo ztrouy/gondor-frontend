@@ -3,6 +3,7 @@ import { AuthorizedRoute } from "./auth/AuthorizedRoute";
 import Login from "../pages/Login.jsx";
 import Register from "../pages/Register";
 import Test from "../pages/test/Test.jsx";
+import AccountDetails from "../pages/account/AccountDetails.jsx";
 
 export const ApplicationViews = () => {
     return (
@@ -11,7 +12,7 @@ export const ApplicationViews = () => {
                 {/* <Route index element={<>Home View</>}/> */}
                 <Route index element={<Test/>}/>
                 <Route path="account">
-                    <Route index element={<>Account View</>}/>
+                    <Route index element={<AccountDetails/>}/>
                     <Route path="addresses" element={<>Manage Addresses View</>}/>
                 </Route>
                 <Route path="appointments" element={<AuthorizedRoute roles={["Clinician", "Receptionist", "Patient"]} all={false}/>}>
