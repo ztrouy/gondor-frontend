@@ -6,17 +6,28 @@ import { Button } from "@mui/material"
 import { getAccountDetailsForCurrentUser } from "../../managers/accountManager.js"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import EditAccountModal from "./EditAccountModal.jsx"
+import dayjs from "dayjs"
 
 const AccountDetails = () => {
     const [accountDetails, setAccountDetails] = useState({})
     const navigate = useNavigate()
+    const [open, setOpen] = useState(false)
 
+    const handleOpen = () => setOpen(true)
+    const handleClose = () => setOpen(false)
+
+    const getAndSetAccountDetails = () => {
+        getAccountDetailsForCurrentUser().then((accountDetails) => {
+            setAccountDetails(accountDetails)
+        })
+    }
+    
     useEffect(() => {
-        getAccountDetailsForCurrentUser().then(setAccountDetails)
+       getAndSetAccountDetails()
     }, [])
 
-    const dateOfBirth = new Date(accountDetails.dateOfBirth)
-    const longDateOfBirth = dateOfBirth.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) 
+    const dateOfBirth = dayjs(accountDetails.dateOfBirth).format('MMMM D, YYYY')
     
     return (
         <Container variant={"page"}>
@@ -29,11 +40,13 @@ const AccountDetails = () => {
                         <SectionHeader sx={{fontWeight: "bold"}}>Email Address</SectionHeader>
                         <Typography>{accountDetails.email}</Typography>
                         <SectionHeader sx={{fontWeight: "bold"}}>Date of Birth</SectionHeader>
-                        <Typography>{longDateOfBirth}</Typography>
+                        <Typography>{dateOfBirth}</Typography>
                         <SectionHeader sx={{fontWeight: "bold"}}>Primary Address</SectionHeader>
-                        <Typography>{accountDetails.primaryAddress}</Typography>
+                        <Typography>{accountDetails.primaryAddress?.line1}{accountDetails.primaryAddress?.line2} </Typography>
+                        <Typography>{accountDetails.primaryAddress?.city}, {accountDetails.primaryAddress?.stateCode} {accountDetails.primaryAddress?.postalCode}</Typography>
                         <Typography sx={{ textDecoration: 'underline', color: "#ACACAC", fontSize: 12}} onClick={() => navigate("/account/addresses")}>Manage Addresses</Typography>
-                    <Button variant="contained" sx={{borderRadius: 28, width: "fit-content", marginTop: 1}} startIcon={<EditOutlined/>}>Edit</Button>
+                    <Button variant="contained" sx={{ borderRadius: 28, width: "fit-content", marginTop: 1 }} onClick={handleOpen} startIcon={<EditOutlined />}>Edit</Button>
+                    <EditAccountModal getAndSetAccountDetails={getAndSetAccountDetails} accountDetails={accountDetails} open={open} handleClose={handleClose} />
                 </Stack>
             </Paper>
         </Container>
