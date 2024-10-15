@@ -1,10 +1,14 @@
 import { createTheme } from "@mui/material"
 import { indigo } from "@mui/material/colors"
+import '@fontsource/inter';
 
 export const baseTheme = createTheme({
     palette: {
         mode: "light",
         primary: indigo,
+    },
+    typography: {
+         fontFamily: 'Inter',
     },
     components: {
         MuiContainer: {
